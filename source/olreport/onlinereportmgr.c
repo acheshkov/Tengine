@@ -130,7 +130,7 @@ int get_valid_task_slot(ONLIN_EREPOT_MGR_T* ctx)
 {
     for (int ii = 0; ii < MAX_ACTION_NUM; ++ii)
     {
-        if ((ctx->rp_task_mask_ & (1 << ii)) != 0)
+        if (( (unsigned int)(ctx->rp_task_mask_) & (1 << ii)) != 0)
         {
             return ii;
         }
@@ -138,6 +138,7 @@ int get_valid_task_slot(ONLIN_EREPOT_MGR_T* ctx)
 
     return -1;
 }
+
 
 static void* worker_run(void* ctx)
 {
