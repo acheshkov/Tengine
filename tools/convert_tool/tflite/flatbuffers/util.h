@@ -561,7 +561,7 @@ inline int FromUTF8(const char** in)
     // Count leading 1 bits.
     for (int mask = 0x80; mask >= 0x04; mask >>= 1)
     {
-        if (**in & mask)
+        if ((static_cast<unsigned char>(**in) & static_cast<unsigned char>(mask)))
         {
             len++;
         }
@@ -579,7 +579,7 @@ inline int FromUTF8(const char** in)
     int ucc = *(*in)++ & ((1 << (7 - len)) - 1);
     for (int i = 0; i < len - 1; i++)
     {
-        if ((**in & 0xC0) != 0x80) return -1; // Upper bits must 1 0.
+        if ((static_cast<unsigned char>(**in) & 0xC0) != 0x80) return -1; // Upper bits must 1 0.
         ucc <<= 6;
         ucc |= *(*in)++ & 0x3F; // Grab 6 more bits of the code.
     }
@@ -604,6 +604,7 @@ inline int FromUTF8(const char** in)
     }
     return ucc;
 }
+
 
 #ifndef FLATBUFFERS_PREFER_PRINTF
 // Wraps a string to a maximum length, inserting new lines where necessary. Any
