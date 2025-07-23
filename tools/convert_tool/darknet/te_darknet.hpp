@@ -111,6 +111,7 @@ inline char* fgetl(FILE* fp)
     if (feof(fp)) return 0;
     size_t size = 512;
     char* line = (char*)malloc(size * sizeof(char));
+    if (!line) return 0;
     if (!fgets(line, size, fp))
     {
         free(line);
@@ -124,12 +125,13 @@ inline char* fgetl(FILE* fp)
         if (curr == size - 1)
         {
             size *= 2;
-            line = (char*)realloc(line, size * sizeof(char));
-            if (!line)
+            char* new_line = (char*)realloc(line, size * sizeof(char));
+            if (!new_line)
             {
-                //printf("%ld\n", (long)size);
-                //malloc_error();
+                free(line);
+                return 0;
             }
+            line = new_line;
         }
         size_t readsize = size - curr;
         //if(readsize > INT_MAX) readsize = INT_MAX-1;
@@ -144,6 +146,7 @@ inline char* fgetl(FILE* fp)
 
     return line;
 }
+
 inline void strip(char* s)
 {
     size_t i;
