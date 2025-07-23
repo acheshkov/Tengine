@@ -416,9 +416,9 @@ int alloc_exec_graph_mem(struct exec_graph* exec_graph)
             if (block_id[j] < 0)
                 continue;
 
-            if (block_id[j] & INPLACE_BLOCK_FLAG)
+            if ((uint8_t)block_id[j] & INPLACE_BLOCK_FLAG)
             {
-                int input_idx = block_id[j] & (INPLACE_BLOCK_FLAG - 1);
+                int input_idx = (uint8_t)block_id[j] & (INPLACE_BLOCK_FLAG - 1);
 
                 struct tensor* input_tensor = get_ir_graph_tensor(ir_graph, ir_node->input_tensors[input_idx]);
                 ir_tensor->data = input_tensor->data;
