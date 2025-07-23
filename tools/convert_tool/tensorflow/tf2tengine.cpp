@@ -2255,12 +2255,16 @@ int load_conv(TFNode* tf_node, TFGraph& tf_graph, ir_graph_t* graph, ir_node_t* 
     }
 
     int* dims = (int*)malloc(sizeof(int) * 4);
+    if (!dims) {
+        free(new_weight);
+        return -1;
+    }
+
     dims[0] = out_channel;
     dims[1] = in_channel;
     dims[2] = kernel_h;
     dims[3] = kernel_w;
 
-    // SetTensorDim(weight_tensor, dims);
     set_ir_tensor_shape(weight_tensor, dims, 4);
     param->kernel_h = kernel_h;
     param->kernel_w = kernel_w;
@@ -2279,10 +2283,8 @@ int load_conv(TFNode* tf_node, TFGraph& tf_graph, ir_graph_t* graph, ir_node_t* 
 
     if (pb_def_num > 1)
     {
-        // the last one,
         const tensorflow::NodeDef* node_def = tf_node->pb_defs[pb_def_num - 1];
 
-        /* possible pad */
         if (node_def->op() == "Const")
         {
             tensorflow::AttrValue value;
@@ -2312,19 +2314,20 @@ int load_conv(TFNode* tf_node, TFGraph& tf_graph, ir_graph_t* graph, ir_node_t* 
                         }
                     }
 
-                    /* h pad */
                     saved_param->pad_h0 = shape_data[2];
                     saved_param->pad_h1 = shape_data[3];
-                    /* w pad */
                     saved_param->pad_w0 = shape_data[4];
                     saved_param->pad_w1 = shape_data[5];
-                    // printf("%d %d %d %d \n",)
                 }
             }
         }
     }
+
+    free(dims);
+    free(new_weight);
     return 0;
 }
+
 int load_batchnorm(TFNode* tf_node, TFGraph& tf_graph, ir_graph_t* graph, ir_node_t* node)
 {
     struct batchnorm_param* param = (struct batchnorm_param*)node->op.param_mem;
