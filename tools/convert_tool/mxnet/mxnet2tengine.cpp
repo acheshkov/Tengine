@@ -141,8 +141,8 @@ int mxnet_serializer::load_graph_node(ir_graph_t* graph, std::vector<MxnetNode>&
         }
 
         // set node io
-        int input_number = mxnet_node.inputs.size();
-        for (int j = 0; j < input_number; j++)
+        size_t input_number = mxnet_node.inputs.size();
+        for (size_t j = 0; j < input_number; j++)
         {
             int input_idx = mxnet_node.inputs.at(j);
             const MxnetNode& input_node = nodelist.at(input_idx);
@@ -172,6 +172,7 @@ int mxnet_serializer::load_graph_node(ir_graph_t* graph, std::vector<MxnetNode>&
 
     return 0;
 }
+
 
 static ir_tensor_t* find_tensor(ir_graph_t* graph, const std::string& tensor_name)
 {
