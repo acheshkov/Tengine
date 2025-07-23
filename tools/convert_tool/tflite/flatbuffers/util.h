@@ -572,16 +572,16 @@ inline int FromUTF8(const char** in)
     }
     if ((static_cast<unsigned char>(**in) << len) & 0x80)
         return -1; // Bit after leading 1's must be 0.
-    if (!len) return *(*in)++;
+    if (!len) return static_cast<unsigned char>(*(*in)++);
     // UTF-8 encoded values with a length are between 2 and 4 bytes.
     if (len < 2 || len > 4) { return -1; }
     // Grab initial bits of the code.
-    int ucc = *(*in)++ & ((1 << (7 - len)) - 1);
+    int ucc = static_cast<unsigned char>(*(*in)++) & ((1 << (7 - len)) - 1);
     for (int i = 0; i < len - 1; i++)
     {
-        if ((**in & 0xC0) != 0x80) return -1; // Upper bits must 1 0.
+        if ((static_cast<unsigned char>(**in) & 0xC0) != 0x80) return -1; // Upper bits must 1 0.
         ucc <<= 6;
-        ucc |= *(*in)++ & 0x3F; // Grab 6 more bits of the code.
+        ucc |= static_cast<unsigned char>(*(*in)++) & 0x3F; // Grab 6 more bits of the code.
     }
     // UTF-8 cannot encode values between 0xD800 and 0xDFFF (reserved for
     // UTF-16 surrogate pairs).
@@ -604,6 +604,7 @@ inline int FromUTF8(const char** in)
     }
     return ucc;
 }
+
 
 #ifndef FLATBUFFERS_PREFER_PRINTF
 // Wraps a string to a maximum length, inserting new lines where necessary. Any
