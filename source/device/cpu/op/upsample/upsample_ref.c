@@ -89,13 +89,13 @@ static int ref_upsample_uint8(struct tensor* input_tensor, struct tensor* output
     float output_scale = output_tensor->scale;
     int32_t input_zero = input_tensor->zero_point;
     int32_t output_zero = output_tensor->zero_point;
-    int input_size = input_tensor->elem_num;
-    int output_size = output_tensor->elem_num;
+    size_t input_size = input_tensor->elem_num;
+    size_t output_size = output_tensor->elem_num;
 
     float* input_fp32 = (float*)sys_malloc(input_size * sizeof(float));
     float* output_fp32 = (float*)sys_malloc(output_size * sizeof(float));
 
-    for (int i = 0; i < input_size; i++)
+    for (size_t i = 0; i < input_size; i++)
     {
         input_fp32[i] = ((float)input_uint8[i] - (float)input_zero) * input_scale;
     }
@@ -111,8 +111,8 @@ static int ref_upsample_uint8(struct tensor* input_tensor, struct tensor* output
                 {
                     int in_w = w / scale;
                     int in_h = h / scale;
-                    int out_idx = n * channel * out_h * out_w + c * out_h * out_w + h * out_w + w;
-                    int in_idx = n * channel * input_h * input_w + c * input_w * input_h + in_h * input_w + in_w;
+                    size_t out_idx = (size_t)n * (size_t)channel * (size_t)out_h * (size_t)out_w + (size_t)c * (size_t)out_h * (size_t)out_w + (size_t)h * (size_t)out_w + (size_t)w;
+                    size_t in_idx = (size_t)n * (size_t)channel * (size_t)input_h * (size_t)input_w + (size_t)c * (size_t)input_w * (size_t)input_h + (size_t)in_h * (size_t)input_w + (size_t)in_w;
                     output_fp32[out_idx] = input_fp32[in_idx];
                 }
             }
@@ -120,7 +120,7 @@ static int ref_upsample_uint8(struct tensor* input_tensor, struct tensor* output
     }
 
     /* quant */
-    for (int i = 0; i < output_size; i++)
+    for (size_t i = 0; i < output_size; i++)
     {
         int udata = round(output_fp32[i] / output_scale + output_zero);
         if (udata > 255)
@@ -135,6 +135,7 @@ static int ref_upsample_uint8(struct tensor* input_tensor, struct tensor* output
 
     return 0;
 }
+
 
 static int init_node(struct node_ops* node_ops, struct exec_node* exec_node, struct exec_graph* exec_graph)
 {
