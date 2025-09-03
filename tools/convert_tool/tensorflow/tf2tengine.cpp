@@ -2505,7 +2505,6 @@ int load_pad(TFNode* tf_node, TFGraph& tf_graph, ir_graph_t* graph, ir_node_t* n
     return 0;
 }
 
-
 int load_concat(TFNode* tf_node, TFGraph& tf_graph, ir_graph_t* graph, ir_node_t* node)
 {
     struct concat_param* param = (struct concat_param*)node->op.param_mem;
