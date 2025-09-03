@@ -2492,7 +2492,6 @@ int load_pad(TFNode* tf_node, TFGraph& tf_graph, ir_graph_t* graph, ir_node_t* n
     if (!paddings) {
         return -1;
     }
-
     param->mode = 0;
     param->pad_0_h = paddings[0];
     param->pad_0_w = paddings[1];
@@ -2502,7 +2501,6 @@ int load_pad(TFNode* tf_node, TFGraph& tf_graph, ir_graph_t* graph, ir_node_t* n
     param->pad_2_w = paddings[5];
     param->pad_3_h = paddings[6];
     param->pad_3_w = paddings[7];
-
     free(paddings);
     return 0;
 }
